@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body>
+    <h1 style="text-align:center;">تطبيق أحمد للتجارة</h1>
+    <p style="text-align:center;">اربط شحنة أرامكس بمحفظتك</p>
+    <button style="width:100%; padding:20px; background:#673ab7; color:white; border-radius:10px;" onclick="Pi.authenticate(['payments'], function(a){alert('تم الربط بنجاح يا أحمد!');})">ربط المحفظة والدفع</button>
+</body>
+</html>
