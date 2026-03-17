@@ -4,15 +4,15 @@
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body style="text-align:center;padding:50px;">
- <button onclick="a()" style="padding:20px;">ربط المحفظة</button>
- <h3 id="t">انتظر..</h3>
+ <button onclick="go()" style="padding:20px;">دخول</button>
+ <h3 id="s">انتظر..</h3>
  <script>
   Pi.init({version:"2.0",sandbox:true});
-  async function a(){
+  async function go(){
    try{
-    const auth=await Pi.authenticate(['username'],(p)=>{});
-    document.getElementById('t').innerText="تم: "+auth.user.username;
-   }catch(e){alert("Error: "+e.message);}
+    const a = await Pi.authenticate(['username'],(p)=>{});
+    document.getElementById('s').innerText="تم: "+a.user.username;
+   }catch(e){alert("خطأ: "+e.message);}
   }
  </script>
 </body>
