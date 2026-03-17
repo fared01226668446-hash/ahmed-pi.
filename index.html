@@ -3,38 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الفارس</title>
+    <title>فحص الفارس</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body style="text-align:center; padding-top:50px; font-family:sans-serif; background:#f4f4f9;">
-    <h2>🚀 منصة الفارس للتداول</h2>
-    <div id="info" style="margin:20px; padding:15px; background:#fff; border-radius:10px;">
-        جاري فحص الاتصال...
+    <h2>🚀 اختبار الدخول السريع</h2>
+    <div id="info" style="margin:20px; padding:15px; background:#fff; border-radius:10px; border: 1px solid #ccc;">
+        جاري تهيئة النظام...
     </div>
-    <button onclick="login()" style="padding:15px 30px; background:#673ab7; color:white; border:none; border-radius:10px; font-size:18px;">
-        تسجيل دخول Pi
+    <button onclick="checkAuth()" style="padding:15px 30px; background:#673ab7; color:white; border:none; border-radius:10px; font-size:18px; cursor:pointer;">
+        اضغط هنا بقوة 
     </button>
 
     <script>
-        // هنا السر: لازم تتأكد إن الـ Sandbox شغال
+        // 1. تشغيل المكتبة فوراً
         window.onload = function() {
             try {
                 window.Pi.init({ version: "2.0", sandbox: true });
-                document.getElementById('info').innerText = "المكتبة جاهزة.. اضغط دخول ✅";
+                document.getElementById('info').innerText = "✅ المكتبة جاهزة للعمل";
             } catch(e) {
-                document.getElementById('info').innerText = "خطأ في الاتصال ❌";
+                document.getElementById('info').innerText = "❌ فشل في الاتصال بالشبكة";
             }
         };
 
-        async function login() {
+        // 2. دالة الدخول المختصرة جداً
+        async function checkAuth() {
+            const infoBox = document.getElementById('info');
+            infoBox.innerText = "⏳ جاري محاولة الدخول...";
+            
             try {
-                // المحاولة دي هتفتح نافذة Pi الرسمية
-                const auth = await window.Pi.authenticate(['username', 'payments'], function(p){});
-                document.getElementById('info').innerText = "تم الدخول: " + auth.user.username;
-                alert("مبروك يا هندسة! اشتغل");
+                // طلب الاسم فقط بدون أي تعقيدات
+                const auth = await window.Pi.authenticate(['username'], function(p){});
+                infoBox.innerText = "🎉 مبروك! الاسم هو: " + auth.user.username;
+                alert("اشتغل يا هندسة! أهلاً بك " + auth.user.username);
             } catch (err) {
-                // لو ظهرت رسالة هنا، قولي مكتوب فيها إيه بالظبط
-                alert("سبب الرفض: " + err.message);
+                // الرسالة دي هي اللي فيها الحل
+                infoBox.innerText = "❌ خطأ تقني: " + err.message;
+                alert("السيستم بيقول: " + err.message);
             }
         }
     </script>
