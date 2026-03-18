@@ -4,7 +4,6 @@
 <button onclick="go()" style="padding:20px;">دخول</button>
 <h3 id="s">انتظر..</h3>
 <script>
-Pi.init({version:"2.0",sandbox:true});
 async function go(){
 try{const a=await Pi.authenticate(['username'],(p)=>{});
 document.getElementById('s').innerText="تم: "+a.user.username;
