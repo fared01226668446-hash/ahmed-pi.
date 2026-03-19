@@ -6,14 +6,14 @@
     <title>مكتب الفريد - Pi App</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align:center; padding-top: 50px; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+<body style="text-align:center; padding-top:50px; font-family:Arial, sans-serif; background-color:#f4f4f4;">
 
-    <div style="background: white; padding: 20px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 90%; max-width: 400px;">
+    <div style="background: white; padding: 20px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 90%;">
         <h2 style="color: #673ab7;">مكتب الفريد</h2>
         <p>مشروع التداول الآلي - شبكة Pi</p>
         <hr style="border: 0.5px solid #eee;">
-        
-        <button id="login-btn" onclick="login()" style="background-color: #673ab7; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; margin-top: 10px;">
+
+        <button id="login-btn" onclick="login()" style="background-color: #673ab7; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 10px; cursor: pointer; width: 100%;">
             تسجيل الدخول عبر Pi
         </button>
 
@@ -23,16 +23,20 @@
     <script>
         // تهيئة التطبيق
         const Pi = window.Pi;
-        Pi.init({ version: "2.0", sandbox: false });
+        // ملاحظة: تم وضع sandbox: true لأن تطبيقك في وضع Testnet
+        Pi.init({ version: "2.0", sandbox: true });
 
         async function login() {
             const statusLabel = document.getElementById("status");
+            const loginBtn = document.getElementById("login-btn");
+
             statusLabel.innerText = "جاري التحقق من حسابك...";
             statusLabel.style.color = "blue";
 
             try {
                 const scopes = ['username', 'payments'];
-                
+
+                // دالة التعامل مع المدفوعات غير المكتملة
                 const onIncompletePaymentFound = (payment) => {
                     console.log("Incomplete payment found", payment);
                 };
@@ -40,13 +44,14 @@
                 // طلب تسجيل الدخول
                 const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
                 
-                statusLabel.innerText = "مرحباً بك يا برنس: " + auth.user.username;
+                statusLabel.innerText = "مرحباً: " + auth.user.username;
                 statusLabel.style.color = "green";
-                
-                console.log("تم تسجيل الدخول بنجاح!");
+                loginBtn.style.display = "none"; // إخفاء الزر بعد النجاح
+
+                console.log("تم تسجيل الدخول بنجاح لـ: ", auth.user.username);
 
             } catch (err) {
-                statusLabel.innerText = "فشل الدخول: " + err.message;
+                statusLabel.innerText = "حدث خطأ أثناء الدخول. حاول مجدداً.";
                 statusLabel.style.color = "red";
                 console.error(err);
             }
