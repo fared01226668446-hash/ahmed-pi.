@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مكتب الفريد - Pi App</title>
+    <title>مكتب الفريد</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body style="text-align:center; padding-top: 50px; background-color: #f4f4f4; font-family: Arial, sans-serif;">
 
-    <div style="background: white; padding: 20px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 80%;">
+    <div style="background: white; padding: 25px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 85%;">
         <h2 style="color: #673ab7;">مكتب الفريد</h2>
-        <p>مشروع التداول - شبكة باي</p>
+        <p>مشروع التداول الآلي - شبكة Pi</p>
+        <p style="font-size: 12px; color: #888;">الرابط: fared01226668446-hash</p>
         
-        <button id="login-btn" onclick="login()" style="background-color: #673ab7; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 18px; cursor: pointer;">
+        <button id="login-btn" onclick="login()" style="background-color: #673ab7; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%;">
             تسجيل الدخول عبر Pi
         </button>
 
@@ -20,29 +21,38 @@
     </div>
 
     <script>
-        // تهيئة تطبيق Pi
+        // تهيئة الـ SDK
         const Pi = window.Pi;
-        Pi.init({ version: "2.0", sandbox: false }); 
+        
+        // ملاحظة: وضعنا sandbox: false لأنك ستجربه داخل Pi Browser الحقيقي
+        try {
+            Pi.init({ version: "2.0", sandbox: false });
+            document.getElementById('status').innerText = "متصل بـ Pi Browser";
+        } catch (e) {
+            document.getElementById('status').innerText = "يرجى الفتح من داخل Pi Browser فقط";
+        }
 
         async function login() {
             const statusLabel = document.getElementById('status');
-            statusLabel.innerText = "جاري التحقق من الحساب...";
+            statusLabel.innerText = "جاري التحقق من حسابك...";
 
             try {
-                // طلب تسجيل الدخول من المستخدم
+                // طلب الصلاحيات الأساسية
                 const scopes = ['username', 'payments'];
-                function onIncompletePaymentFound(payment) { /* معالجة المدفوعات غير المكتملة */ }
+                
+                function onIncompletePaymentFound(payment) {
+                    console.log("دفعة غير مكتملة");
+                };
 
                 const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
                 
-                statusLabel.innerText = "مرحباً بك: " + auth.user.username;
+                // رسالة النجاح
+                statusLabel.innerText = "مرحباً بك يا سيد: " + auth.user.username;
                 statusLabel.style.color = "green";
                 
-                // هنا يمكنك توجيه المستخدم لصفحة التداول بعد الدخول بنجاح
-                // window.location.href = "trading.html"; 
-
+                // هنا يكتمل الدخول بنجاح
             } catch (err) {
-                statusLabel.innerText = "خطأ في تسجيل الدخول: " + err.message;
+                statusLabel.innerText = "خطأ في الدخول: " + err.message;
                 statusLabel.style.color = "red";
                 console.error(err);
             }
