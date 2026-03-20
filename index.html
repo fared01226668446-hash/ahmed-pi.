@@ -69,7 +69,7 @@
 
 <script>
     const Pi = window.Pi;
-    // تفعيل وضع الـ sandbox لضمان عمل الزرار في بيئة التجربة
+    // تم تفعيل sandbox هنا ليتمكن الزر من العمل في بيئة التجربة
     Pi.init({ version: "2.0", sandbox: true }); 
 
     async function login() {
@@ -79,7 +79,7 @@
             alert("أهلاً بك يا " + auth.user.username);
         } catch (err) {
             console.error(err);
-            alert("تنبيه: تأكد من فتح الرابط من داخل Pi Browser وقم بتفعيل Sandbox من صفحة المطورين.");
+            alert("تنبيه: افتح الرابط داخل Pi Browser وتأكد من تفعيل وضع المطور في المحفظة.");
         }
     }
 
