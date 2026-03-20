@@ -1,21 +1,48 @@
-<script>
-async function login() {
-    const status = document.getElementById("status");
-    status.innerHTML = "جاري التحقق.. من فضلك انتظر";
-    
-    try {
-        const scopes = ['username'];
-        const onIncompletePaymentFound = (payment) => {
-            console.log("Incomplete payment found", payment);
-        };
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتب الفريد للخدمات</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f0f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 85%; max-width: 400px; border: 2px solid #673ab7; }
+        h2 { color: #333; margin-bottom: 20px; }
+        .btn { background-color: #673ab7; color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-size: 18px; width: 100%; font-weight: bold; }
+        #status { margin-top: 25px; color: #555; font-size: 16px; }
+    </style>
+</head>
+<body>
 
-        const auth = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
-        
-        status.innerHTML = "✅ أهلاً بك: " + auth.user.username;
-        status.style.color = "green";
-    } catch (e) {
-        status.innerHTML = "❌ خطأ: يرجى فتح التطبيق من متصفح Pi";
-        status.style.color = "red";
-    }
-}
-</script>
+    <div class="card">
+        <h2>مكتب الفريد للخدمات</h2>
+        <button class="btn" onclick="login()">دخول عبر شبكة Pi</button>
+        <div id="status">..جاهز للاتصال</div>
+    </div>
+
+    <script>
+        const Pi = window.Pi;
+        Pi.init({ version: "2.0" });
+
+        async function login() {
+            const status = document.getElementById("status");
+            status.innerHTML = "جاري التحقق.. من فضلك انتظر";
+            
+            try {
+                const scopes = ['username'];
+                const onIncompletePaymentFound = (payment) => { console.log("Payment found", payment); };
+
+                const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+                
+                status.innerHTML = "✅ أهلاً بك: " + auth.user.username;
+                status.style.color = "green";
+                status.style.fontWeight = "bold";
+            } catch (e) {
+                status.innerHTML = "❌ خطأ: يرجى المحاولة من Pi Browser";
+                status.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
