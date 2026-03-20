@@ -1,84 +1,20 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مكتب الفريد للخدمات</title>
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-        .card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 90%;
-        }
-        .logo-circle {
-            width: 80px;
-            height: 80px;
-            background: #673ab7;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            margin: 0 auto 1rem;
-        }
-        h2 { color: #333; margin-bottom: 0.5rem; }
-        p { color: #777; margin-bottom: 1.5rem; }
-        .btn {
-            background: linear-gradient(135deg, #673ab7, #512da8);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-            transition: 0.3s;
-        }
-        .btn:hover { opacity: 0.9; }
-    </style>
-</head>
-<body>
-
-<div class="card">
-    <div class="logo-circle">F</div>
-    <h2>مكتب الفريد للخدمات</h2>
-    <p>مرحباً بك في تطبيقنا. نحن هنا لخدمتك بأفضل التقنيات.</p>
-    <button class="btn" onclick="login()">تسجيل الدخول عبر Pi</button>
-</div>
-
 <script>
     const Pi = window.Pi;
-    Pi.init({ version: "2.0", sandbox: true });
+    // حاولنا هنا تشغيل الـ SDK بدون وضع الـ sandbox لتجربة الدخول الفعلي
+    Pi.init({ version: "2.0" }); 
 
     async function login() {
         try {
             const scopes = ['username', 'payments'];
             const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-            alert("أهلاً بك: " + auth.user.username);
+            alert("مرحباً: " + auth.user.username);
         } catch (err) {
             console.error(err);
+            alert("حدث خطأ: تأكد من فتح الرابط داخل متصفح Pi Browser");
         }
     }
 
     function onIncompletePaymentFound(payment) {
-        /* معالجة المدفوعات غير المكتملة هنا */
+        // معالجة المدفوعات المعلقة
     };
 </script>
-
-</body>
-</html>
