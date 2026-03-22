@@ -2,14 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الفريد للخرسانة الجاهزة</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         body { font-family: sans-serif; text-align: center; padding-top: 50px; background: #f4f4f9; }
         .card { background: white; padding: 25px; border-radius: 20px; display: inline-block; width: 85%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .btn { background: #673ab7; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; margin-top: 20px; font-weight: bold; }
-        #content { display: none; margin-top: 20px; background: #e8f5e9; padding: 10px; border-radius: 10px; }
+        #content { display: none; margin-top: 20px; background: #e8f5e9; padding: 15px; border-radius: 10px; border: 1px solid #4CAF50; }
     </style>
 </head>
 <body>
@@ -18,24 +17,26 @@
         <p>خدمات مدينة 6 أكتوبر والشيخ زايد</p>
         <button id="btn" class="btn" disabled>جاري التحقق من الحساب...</button>
         <div id="content">
-            <h3 style="color: green;">تم التحقق بنجاح!</h3>
+            <h3 style="color: #2e7d32;">تم التحقق بنجاح!</h3>
             <p>مرحباً بك في منصة الفريد</p>
             <button class="btn" onclick="window.location.href='https://wa.me/201226668446'">اطلب الآن عبر واتساب</button>
         </div>
     </div>
     <script>
         const Pi = window.Pi;
-        // جرب تغيير sandbox لـ false لو كنت مفعل الـ Mainnet في المحفظة
+        // جرب تغيير sandbox إلى false لو كنت تستخدم المحفظة الحقيقية
         Pi.init({ version: "2.0", sandbox: true });
         async function auth() {
             try {
-                // سطر المصادقة المختصر
+                // محاولة الاتصال
                 const user = await Pi.authenticate(['username'], (p) => {});
                 document.getElementById('btn').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
             } catch (e) {
-                document.getElementById('btn').innerText = "خطأ في الاتصال بالشبكة";
+                // إذا فشل، سيظهر الزر لإعادة المحاولة مع توضيح الخطأ
+                document.getElementById('btn').innerText = "إعادة المحاولة (خطأ في الربط)";
                 document.getElementById('btn').disabled = false;
+                document.getElementById('btn').onclick = () => location.reload();
             }
         }
         window.onload = auth;
