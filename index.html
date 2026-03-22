@@ -1,40 +1,97 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الفريد للخرسانة الجاهزة</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; background: #f4f4f9; }
-        .card { background: white; padding: 25px; border-radius: 20px; display: inline-block; width: 85%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .btn { background: #673ab7; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; margin-top: 20px; font-weight: bold; cursor: pointer; }
-        #content { display: none; margin-top: 20px; background: #e8f5e9; padding: 15px; border-radius: 10px; border: 1px solid #4CAF50; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 400px; }
+        h2 { color: #333; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 20px; }
+        .btn { background: #673ab7; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; width: 100%; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { background: #512da8; }
+        #content { display: none; border-top: 2px solid #eee; pt: 20px; }
+        .status { color: #2e7d32; font-weight: bold; margin-top: 10px; }
+        .payment-section { margin-top: 20px; padding: 15px; background: #f0ebf7; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>الفريد للخرسانة الجاهزة</h2>
-        <p>خدمات مدينة 6 أكتوبر والشيخ زايد</p>
-        <button id="btn" class="btn" onclick="auth()">دخول يدوي للمنصة</button>
-        <div id="content">
-            <h3 style="color: #2e7d32;">تم التحقق بنجاح!</h3>
-            <p>مرحباً بك في منصة الفريد</p>
-            <button class="btn" onclick="window.location.href='https://wa.me/201226668446'">اطلب عبر واتساب</button>
+
+<div class="card">
+    <h2>الفريد للخرسانة الجاهزة</h2>
+    <p>خدمات مدينة 6 أكتوبر والشيخ زايد</p>
+    
+    <button id="btn-auth" class="btn" onclick="auth()">دخول عبر Pi Network</button>
+
+    <div id="content">
+        <p class="status">✅ تم التحقق بنجاح</p>
+        <p id="user-welcome">مرحباً بك في منصة الفريد</p>
+        
+        <div class="payment-section">
+            <p>طلب معاينة موقع (تجريبي)</p>
+            <button class="btn" style="background: #ef6c00;" onclick="transferPi()">دفع 1 Test-Pi</button>
         </div>
+
+        <button class="btn" style="background: #666; margin-top: 20px;" onclick="window.location.reload()">تسجيل خروج</button>
     </div>
-    <script>
-        const Pi = window.Pi;
-        Pi.init({ version: "2.0", sandbox: true });
-        async function auth() {
-            try {
-                document.getElementById('btn').innerText = "جاري الاتصال...";
-                const user = await Pi.authenticate(['username'], (p) => {});
-                document.getElementById('btn').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-            } catch (e) {
-                alert("يرجى فتح الموقع من متصفح Pi Browser");
-            }
+</div>
+
+<script>
+    const Pi = window.Pi;
+    // تهيئة التطبيق - Sandbox: true تعني العمل على شبكة التست نت
+    Pi.init({ version: "2.0", sandbox: true });
+
+    async function auth() {
+        const btn = document.getElementById('btn-auth');
+        btn.innerText = "جاري الاتصال...";
+        
+        try {
+            const scopes = ['username', 'payments'];
+            
+            // دالة ضرورية للتعامل مع أي مدفوعات معلقة
+            function onIncompletePaymentFound(payment) {
+                console.log("هناك عملية دفع لم تكتمل:", payment);
+            };
+
+            const user = await Pi.authenticate(scopes, onIncompletePaymentFound);
+            
+            // تحديث الواجهة عند النجاح
+            document.getElementById('btn-auth').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('user-welcome').innerText = "مرحباً بك يا " + user.user.username;
+            
+        } catch (e) {
+            alert("فشل الاتصال: تأكد من فتح الرابط داخل Pi Browser");
+            btn.innerText = "إعادة المحاولة";
         }
-    </script>
+    }
+
+    // كود عملية الدفع (Payment Flow)
+    async function transferPi() {
+        try {
+            const payment = await Pi.createPayment({
+                amount: 1,
+                memo: "رسوم معاينة موقع - مكتب الفريد",
+                metadata: { serviceType: "consultation" },
+            }, {
+                onReadyForServerApproval: function(paymentId) {
+                    // في المرحلة الحالية (Testnet) يمكنك إظهار رسالة نجاح مبدئية
+                    console.log("عملية الدفع جاهزة للموافقة:", paymentId);
+                    alert("تم إرسال طلب الدفع للمحفظة، يرجى التأكيد داخل المحفظة.");
+                },
+                onReadyForServerCompletion: function(paymentId, txid) {
+                    alert("تمت العملية بنجاح! رقم المعاملة: " + txid);
+                },
+                onCancel: function(paymentId) { console.log("تم إلغاء الدفع"); },
+                onError: function(error, payment) { console.error("خطأ في الدفع:", error); }
+            });
+        } catch (e) {
+            alert("خطأ في تنفيذ عملية الدفع: " + e.message);
+        }
+    }
+</script>
+
 </body>
 </html>
