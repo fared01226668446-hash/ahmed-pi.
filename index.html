@@ -16,7 +16,7 @@
     <div class="card">
         <h2>الفريد للخرسانة الجاهزة</h2>
         <p>خدمات مدينة 6 أكتوبر والشيخ زايد</p>
-        <button id="btn" class="btn" disabled>جاري التحقق...</button>
+        <button id="btn" class="btn" onclick="auth()">دخول يدوي للمنصة</button>
         <div id="content">
             <h3 style="color: #2e7d32;">تم التحقق بنجاح!</h3>
             <p>مرحباً بك في منصة الفريد</p>
@@ -28,16 +28,15 @@
         Pi.init({ version: "2.0", sandbox: true });
         async function auth() {
             try {
+                document.getElementById('btn').innerText = "جاري الاتصال...";
                 const user = await Pi.authenticate(['username'], (p) => {});
                 document.getElementById('btn').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
             } catch (e) {
-                document.getElementById('btn').innerText = "دخول يدوي";
-                document.getElementById('btn').disabled = false;
-                document.getElementById('btn').onclick = () => auth();
+                alert("افتح الرابط من داخل متصفح Pi فقط");
+                document.getElementById('btn').innerText = "إعادة المحاولة";
             }
         }
-        window.onload = auth;
     </script>
 </body>
 </html>
